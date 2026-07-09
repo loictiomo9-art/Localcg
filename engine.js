@@ -1,51 +1,47 @@
-const FILES = 'abcdefgh';
-
 const ChessEngine = {
-  sq: (f, r) => r * 8 + f,
+  sq: (file, rank) => rank * 8 + file,
   fileOf: i => i % 8,
   rankOf: i => Math.floor(i / 8),
-  squareName: i => FILES[ChessEngine.fileOf(i)] + (ChessEngine.rankOf(i) + 1),
 
   initialState() {
     return {
       board: [
-        'bR','bN','bB','bQ','bK','bB','bN','bR',
-        'bP','bP','bP','bP','bP','bP','bP','bP',
+        "bR","bN","bB","bQ","bK","bB","bN","bR",
+        "bP","bP","bP","bP","bP","bP","bP","bP",
         null,null,null,null,null,null,null,null,
         null,null,null,null,null,null,null,null,
         null,null,null,null,null,null,null,null,
         null,null,null,null,null,null,null,null,
-        'wP','wP','wP','wP','wP','wP','wP','wP',
-        'wR','wN','wB','wQ','wK','wB','wN','wR'
+        "wP","wP","wP","wP","wP","wP","wP","wP",
+        "wR","wN","wB","wQ","wK","wB","wN","wR"
       ],
-      turn: 'w',
-      castling: {wK:true, wQ:true, bK:true, bQ:true},
-      epTarget: null
+      turn: "w"
     };
   },
 
   colorOf(p) { return p ? p[0] : null; },
   typeOf(p) { return p ? p[1] : null; },
 
-  generateLegalMoves(state) {
-    // Implémentation simplifiée mais complète pour ce projet
-    // (dans une vraie version on aurait toutes les règles)
-    const moves = [];
-    // ... (génération des coups)
-    return moves;
-  },
-
   applyMove(state, move) {
-    const newState = JSON.parse(JSON.stringify(state));
-    newState.board[move.to] = newState.board[move.from];
-    newState.board[move.from] = null;
-    newState.turn = newState.turn === 'w' ? 'b' : 'w';
-    return newState;
+    const newBoard = [...state.board];
+    newBoard[move.to] = newBoard[move.from];
+    newBoard[move.from] = null;
+
+    return {
+      board: newBoard,
+      turn: state.turn === "w" ? "b" : "w"
+    };
   },
 
-  getStatus(state) {
-    // checkmate, stalemate, playing...
-    return 'playing';
+  generateLegalMoves(state) {
+    const moves = [];
+    for (let i = 0; i < 64; i++) {
+      const piece = state.board[i];
+      if (piece && this.colorOf(piece) === state.turn) {
+        moves.push({ from: i, to: i + 8 }); // Exemple simplifié - à améliorer
+      }
+    }
+    return moves;
   }
 };
 
