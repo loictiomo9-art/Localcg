@@ -1,8 +1,14 @@
-let state = ChessEngine.initialState();
+let state = null;
 let selected = null;
-let moveHistory = [];
 
 const boardEl = document.getElementById('board');
+const statusEl = document.getElementById('status');
+
+function initGame() {
+  state = ChessEngine.initialState();
+  selected = null;
+  render();
+}
 
 function render() {
   boardEl.innerHTML = '';
@@ -15,29 +21,57 @@ function render() {
 
       const piece = state.board[index];
       if (piece) {
-        square.innerHTML = `<span class="piece">${getPieceSymbol(piece)}</span>`;
+        square.innerHTML = `<span>${getSymbol(piece)}</span>`;
       }
 
-      square.addEventListener('click', () => handleSquareClick(index));
+      square.addEventListener('click', () => onSquareClick(index));
       boardEl.appendChild(square);
     }
   }
 }
 
-function getPieceSymbol(piece) {
-  const symbols = {'K':'♔','Q':'♕','R':'♖','B':'♗','N':'♘','P':'♙'};
-  return piece[0] === 'w' ? symbols[piece[1]] : symbols[piece[1]].toLowerCase().replace(/[a-z]/, c => String.fromCharCode(c.charCodeAt(0) + 0x6));
+function getSymbol(piece) {
+  const symbols = { 'K':'♔','Q':'♕','R':'♖','B':'♗','N':'♘','P':'♙' };
+  return piece[0] === 'w' ? symbols[piece[1]] : symbols[piece[1]].toLowerCase();
 }
 
-function handleSquareClick(index) {
-  // Logique de sélection et coup
+function onSquareClick(index) {
+  if (state.turn !== 'w') return;
+
+  const piece = state.board[index];
+
+  if (selected !== null) {
+    // Essayer de jouer le coup
+    const move = { from: selected, to: index };
+    const newState = ChessEngine.applyMove(state, move);
+    if (newState) {
+      state = newState;
+      render();
+      setTimeout(aiPlay, 300);
+      return;
+    }
+    selected = null;
+  }
+
+  if (piece && piece[0] === 'w') {
+    selected = index;
+  }
+
   render();
-  // Appel IA après coup joueur
 }
 
-document.getElementById('newBtn').addEventListener('click', () => {
-  state = ChessEngine.initialState();
-  render();
+function aiPlay() {
+  const move = ChessAI.chooseMove(state);
+  if (move) {
+    state = ChessEngine.applyMove(state, move);
+    render();
+  }
+}
+
+document.getElementById('newBtn').addEventListener('click', initGame);
+document.getElementById('undoBtn').addEventListener('click', () => {
+  // Simplifié pour l'instant
+  initGame();
 });
 
-render();
+initGame();
