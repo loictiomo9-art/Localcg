@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Échecs 1800</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Échecs 1800 Elo</h1>
+    </header>
+    <div class="board" id="board"></div>
+    <div class="status" id="status">À vous de jouer (Blancs)</div>
+    <div class="controls">
+      <button id="newBtn">Nouvelle Partie</button>
+      <button id="undoBtn">Annuler Coup</button>
+    </div>
+  </div>
+
+  <script src="engine.js"></script>
+  <script src="ai.js"></script>
+  <script src="main.js"></script>
+</body>
+    </html>
